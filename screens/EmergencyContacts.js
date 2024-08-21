@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  KeyboardAvoidingView,
+  Platform,
+  FlatList,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_EMERGENCY_URL,API_SEND_URL} from '@env';
 
 export default function EmergencyContacts({ navigation }) {
   const [name, setName] = useState('');
@@ -9,7 +21,12 @@ export default function EmergencyContacts({ navigation }) {
   const [contacts, setContacts] = useState([]);
   const [locationData, setLocationData] = useState(null);
 
-  // Function to load contacts from AsyncStorage
+  // Load contacts and location data when the component mounts
+  useEffect(() => {
+    loadContacts();
+    loadLocationData();
+  }, []);
+
   const loadContacts = async () => {
     try {
       const storedContacts = await AsyncStorage.getItem('emergencyContacts');
@@ -21,7 +38,6 @@ export default function EmergencyContacts({ navigation }) {
     }
   };
 
-  // Function to load location data from AsyncStorage
   const loadLocationData = async () => {
     try {
       const storedLocation = await AsyncStorage.getItem('locationData');
@@ -33,7 +49,6 @@ export default function EmergencyContacts({ navigation }) {
     }
   };
 
-  // Function to save contacts to AsyncStorage
   const saveContacts = async (newContacts) => {
     try {
       await AsyncStorage.setItem('emergencyContacts', JSON.stringify(newContacts));
@@ -42,7 +57,6 @@ export default function EmergencyContacts({ navigation }) {
     }
   };
 
-  // Function to handle adding a new contact
   const handleAddContact = () => {
     if (!name || !email || !phoneNumber) {
       Alert.alert('Please fill in all fields');
@@ -60,14 +74,12 @@ export default function EmergencyContacts({ navigation }) {
     setPhoneNumber('');
   };
 
-  // Function to handle deleting a contact
   const handleDeleteContact = (index) => {
     const updatedContacts = contacts.filter((_, i) => i !== index);
     setContacts(updatedContacts);
     saveContacts(updatedContacts);
   };
 
-  // Function to handle sending an emergency email
   const handleEmergency = async () => {
     if (!contacts.length || !locationData) {
       Alert.alert('Please add contacts and ensure location data is available');
@@ -75,7 +87,9 @@ export default function EmergencyContacts({ navigation }) {
     }
 
     try {
-      const response = await fetch('https://emergencytracker-rm8r.onrender.com/mail/send/', {
+      console.log("Env val here 2"+API_SEND_URL)
+      console.log("Env val here"+API_EMERGENCY_URL)
+      const response = await fetch(API_EMERGENCY_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +113,6 @@ export default function EmergencyContacts({ navigation }) {
     }
   };
 
-  // Function to handle logout
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('access_token'); // Remove access token
@@ -109,39 +122,44 @@ export default function EmergencyContacts({ navigation }) {
     }
   };
 
-  // Load contacts and location data when the component mounts
-  useEffect(() => {
-    loadContacts();
-    loadLocationData();
-  }, []);
-
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // Adjust based on your layout
+    >
       <Text style={styles.title}>Emergency Contact List</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        keyboardType="phone-pad"
-      />
-      
-      <Button title="Add Contact" onPress={handleAddContact} />
-      
+
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="email-address"
+        />
+
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddContact}
+        >
+          <Text style={styles.addButtonText}>Add Contact</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={contacts}
         keyExtractor={(item, index) => index.toString()}
@@ -160,8 +178,9 @@ export default function EmergencyContacts({ navigation }) {
             </TouchableOpacity>
           </View>
         )}
+        contentContainerStyle={styles.listContent}
       />
-      
+
       <TouchableOpacity
         style={styles.emergencyButton}
         onPress={handleEmergency}
@@ -169,88 +188,113 @@ export default function EmergencyContacts({ navigation }) {
         <Text style={styles.emergencyButtonText}>Emergency</Text>
       </TouchableOpacity>
 
-      {/* Logout Button */}
       <TouchableOpacity
         style={styles.logoutButton}
         onPress={handleLogout}
       >
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
     padding: 20,
   },
   title: {
     fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
   },
+  form: {
+    marginBottom: 20,
+  },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#CCC',
     borderWidth: 1,
     marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+  },
+  addButton: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  addButtonText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  listContent: {
+    paddingBottom: 20, // Ensures content isn't hidden behind other elements
   },
   contactItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   contactDetails: {
     flex: 1,
   },
   contactText: {
     fontSize: 16,
+    color: '#333',
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#FF6347',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   deleteButtonText: {
-    color: 'white',
+    color: '#FFF',
     fontSize: 14,
   },
   emergencyButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#FF0000',
     paddingVertical: 15,
-    marginTop: 20,
-    borderRadius: 5,
+    borderRadius: 8,
     alignItems: 'center',
+    marginTop: 20,
   },
   emergencyButtonText: {
-    color: 'white',
+    color: '#FFF',
     fontSize: 18,
+    fontWeight: 'bold',
   },
-  
   logoutButton: {
-  backgroundColor: '#1E90FF', // A more subtle blue shade
-  paddingVertical: 12,        // Slightly less padding for a more modern look
-  paddingHorizontal: 20,      // Add horizontal padding to make the button wider
-  marginTop: 20,
-  borderRadius: 8,            // Increase border radius for a smoother, rounder edge
-  alignItems: 'center',
-  justifyContent: 'center',   // Center content vertically if needed
-  shadowColor: '#000',        // Add subtle shadow for depth
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.3,
-  shadowRadius: 4,
-  elevation: 5,               // Elevation for Android shadow
-},
-
+    backgroundColor: '#1E90FF',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   logoutButtonText: {
-    color: 'white',
+    color: '#FFF',
     fontSize: 18,
+    fontWeight: 'bold',
   },
 });

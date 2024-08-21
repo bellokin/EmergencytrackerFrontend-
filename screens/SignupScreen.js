@@ -18,7 +18,8 @@ import {
   import AppIcon from "../assets/images/Appicon.png";
   import { SafeAreaView } from "react-native-safe-area-context";
   import AsyncStorage from '@react-native-async-storage/async-storage';
-  
+  import { API_SIGNUP_URL } from '@env';
+
   const SignupScreen = ({ navigation }) => {
 	const [loading, setLoading] = useState(false);
 	const [Email, setEmail] = useState("");
@@ -92,7 +93,7 @@ import {
 		};
 		setLoading(true);
 		try {
-		  const response = await axios.post("https://emergencytracker-rm8r.onrender.com/signup/", req);
+		  const response = await axios.post(API_SIGNUP_URL, req);
 		  console.log(response?.data);
   
 		  // Store the token in AsyncStorage

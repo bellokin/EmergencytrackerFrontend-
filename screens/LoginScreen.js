@@ -17,7 +17,8 @@ import {
   import axios from "axios";
   import { SafeAreaView } from "react-native-safe-area-context";
   import AsyncStorage from '@react-native-async-storage/async-storage';
-  
+  import { API_LOGIN_URL } from '@env';
+
   const LoginScreen = ({ navigation }) => {
 	const [loading, setLoading] = useState(false);
 	const [email, setEmail] = useState("");
@@ -73,7 +74,7 @@ import {
 		};
 		setLoading(true);
 		try {
-		  const response = await axios.post("https://emergencytracker-rm8r.onrender.com/login/", req);
+		  const response = await axios.post(API_LOGIN_URL, req);
 		  console.log(response?.data);
   
 		  // Store the token in AsyncStorage
