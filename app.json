@@ -6,7 +6,10 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -26,10 +29,16 @@
         "googleMaps": {
           "apiKey": "AIzaSyCa_C1GIFGfE-T50ac8_ZSweJ2SG-hFtUI"
         }
-      }
+      },
+      "package": "com.johndoe_13.Tracker"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b866c269-fbfd-4093-a53b-140e252e3ca2"
+      }
     }
   }
 }
