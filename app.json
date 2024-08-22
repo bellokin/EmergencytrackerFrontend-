@@ -27,7 +27,7 @@
       },
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCa_C1GIFGfE-T50ac8_ZSweJ2SG-hFtUI"
+          "apiKey": "INSERT GOOGLE MAPS API KEY"
         }
       },
       "package": "com.johndoe_13.Tracker"
@@ -37,7 +37,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "b866c269-fbfd-4093-a53b-140e252e3ca2"
+        "projectId": "INSERT EAS ID "
       }
     }
   }
