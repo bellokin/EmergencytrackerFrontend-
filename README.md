@@ -48,7 +48,7 @@ To install and run this project locally:
     ```bash
     expo build:android
     ```
-
+NOTE-"Google maps APi in the app.json was replaced ,Swap with dummy value with different API"
 ## Usage
 
 - **Sign Up / Login**: Start by creating an account or logging in.
