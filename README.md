@@ -22,7 +22,7 @@ To install and run this project locally:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/emergency-gps-location-tracker.git
+    git clone  https://github.com/bellokin/EmergencytrackerFrontend-.git
     cd emergency-gps-location-tracker
     ```
 
@@ -40,7 +40,7 @@ To install and run this project locally:
 4. Run the app:
 
     ```bash
-    expo start
+    npx expo start
     ```
 
 5. Build the APK for Android:
@@ -63,7 +63,7 @@ To install and run this project locally:
 - **React Native**: For building the cross-platform mobile app.
 - **Expo**: For development, testing, and building the application.
 - **Django**: For backend services, managing user data, authentication, and handling API requests.
-- **GPS and Accelerometer APIs**: For location tracking and motion detection.
+- **GPS and Accelerometer Library**: For location tracking and motion detection.
 - **Text Messaging and Email APIs**: For sending emergency alerts to contacts.
 
 ## Contributing
