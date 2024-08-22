@@ -17,7 +17,7 @@
     },
     "ios": {
       "config": {
-        "googleMapsApiKey": "AIzaSyCa_C1GIFGfE-T50ac8_ZSweJ2SG-hFtUI"
+        "googleMapsApiKey": "INSERT GOOGLE MAPS APIKEY "
       }
     },
     "android": {
